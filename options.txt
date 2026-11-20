@@ -1,0 +1,111 @@
+# Skate 3 for Switch 2 - options. Copy to sdmc:/switch/skate3/options.txt (read at startup).
+# One name=value per line; any SDK setting can be set. Lines starting with # are comments.
+# The defaults below are the tuned release settings (about 60 fps in gameplay).
+
+# ---------------------------------------------------------------------------------------------
+# Debugging (all OFF by default; enable only when you need to report or investigate a problem)
+# ---------------------------------------------------------------------------------------------
+# Without it, the game only writes logs/skate3_NNN.log (warnings and errors; the last 2 launches
+# are kept) and crash_hooks.txt if it crashes.
+# Master debug switch: writes trace.txt (startup steps), sampler.txt (thread snapshots every 3 s),
+# verbose logs (every file opened, kernel/thread activity), every C++ exception to crash_hooks.txt,
+# and per-5-second statistics lines in the log (fps, GPU time, render target transfers, texture
+# loads, long waits).
+#ns2_debug=true
+# Statistical CPU profiler of the GPU/render/main/job threads -> sdmc:/switch/skate3/prof.txt
+# (samples per second, e.g. 100; small overhead).
+#prof_hz=100
+# Debug screenshots every 4 s to shots/ (each one stalls the GPU and writes 2.7 MB).
+#ns2_screenshots=true
+# Built-in CPU profile of the GPU thread (costs time itself).
+#gpu_cpu_profile=true
+
+# ---------------------------------------------------------------------------------------------
+# CPU
+# ---------------------------------------------------------------------------------------------
+# CPU clock in MHz, "max" or "default".
+cpu_mhz=max
+# GPU clock in MHz, "max" or "default" (the system's own choice). Handheld runs the GPU at ~561 MHz
+# (docked ~1007 MHz). Measured: forcing "max" (1389 MHz) in handheld made the game SLOWER (~35 fps
+# instead of ~42): the shared power/heat budget leaves less for the CPU. Leave it off unless testing.
+# The log (trace.txt) shows the possible rates. Applied again after HOME and docking/undocking.
+#gpu_mhz=max
+# Memory (RAM) clock, same format. Measured in handheld: the system accepts 3750 MHz (default 2133) but
+# the game then runs at HALF the speed (CPU throttled by the power limit, ~22 fps). Leave it off.
+#mem_mhz=max
+# Trylock attempts on the global critical region (guest atomics, kernel objects) and on every other
+# mutex before blocking in the kernel. 0 = original behaviour.
+ns2_global_lock_spin=200
+ns2_mutex_spin=50
+# Multi-object waits sleep until signaled and events notify outside their lock.
+# false = original 1 ms polling.
+ns2_wait_wakeups=true
+
+# Handheld frame cap: 0 = uncapped (default: about 50 fps in busy gameplay, up to 60 elsewhere).
+# Set e.g. 40 for a locked, evenly paced 40 fps instead (the handheld screen is 120 Hz capable:
+# 40 fps = every 3rd refresh). Docked is unaffected (60).
+handheld_fps_cap=0
+
+# ---------------------------------------------------------------------------------------------
+# GPU emulation
+# ---------------------------------------------------------------------------------------------
+# CPU readback of GPU resolves. none = original behaviour (faster).
+readback_resolve=none
+# Re-check every page of a texture for N ms after a change is seen in it (0 = off).
+# Set to 1000 if movies show stale blocks.
+gpu_revalidate_force_ms=0
+# Store GPU registers without side effects directly (false = original path).
+gpu_fast_register_writes=true
+# Frame pacing: fast vblanks + a swap limiter at 60 per second (vsync=true would round slow frames
+# up to the next 60 Hz vblank and average ~45 fps).
+vsync=false
+swap_frame_limit_fps=60
+
+# Vulkan descriptor work (NVK flushes the CPU cache after every descriptor write).
+# If anything renders wrong (wrong/flickering textures), set these back to false one at a time.
+vulkan_push_constants_descriptors=true
+vulkan_reuse_transient_texture_descriptors=true
+vulkan_reuse_unchanged_draw_bindings=true
+# Replay + vkQueueSubmit on a separate "GPU Submit" thread. If the screen shows garbage, stale
+# frames or hangs, set to false.
+vulkan_async_submit=true
+# Submit GPU work once per frame instead of also at the end of every guest command buffer.
+# If fps drops or stutters, set back to true.
+vulkan_submit_on_primary_buffer_end=false
+
+# Render targets. If reflections, shadows, menus, decals or post-effects look wrong, set these back
+# (vulkan_transfer_stencil_bits to true, the others to false), one at a time to find which.
+vulkan_direct_resolve_fast32=true
+vulkan_deferred_resolve_clears=true
+# false = depth-buffer transfers only clear the stencil instead of copying it (8 draws each).
+vulkan_transfer_stencil_bits=false
+# Render-to-texture images load straight into the texture through a storage image.
+vulkan_storage_image_texture_loads_unscaled=true
+
+# ---------------------------------------------------------------------------------------------
+# Handheld performance experiments (all OFF by default; see HANDHELD_PERF.md section 7)
+# ---------------------------------------------------------------------------------------------
+# Render target copies: remember which EDRAM tiles each render target still holds and only copy
+# the tiles that changed since (the ping-pong between 1x/2x/4x MSAA views copies back only what
+# the other view drew). If shadows, depth or reflections look wrong, turn it off.
+#ns2_rt_valid_tracking=true
+# ON by default since 2026-11-19 (measured -0.7..-1.3 ms in handheld, no glitch seen): drop render target copies that the draw right after fully overwrites
+# (full-screen depth/colour passes). Wrong if that draw does not cover the whole area.
+ns2_rt_skip_overwritten_transfers=true
+# Also skip the overwritten part when the full-screen pass covers only part of the width, and
+# accept full-screen passes drawn as 2 rectangles (measured ~-0.2..-0.4 ms each, no glitch seen).
+ns2_rt_overwrite_partial_width=true
+ns2_rt_overwrite_max_rects=2
+# Render-to-texture: when the game copies an 8888 image to a texture (bloom, shadow maps, scene
+# copy), also write the texture directly from the render target instead of reloading it.
+# If glow/bloom/shadows/menus flicker or show old frames, turn it off.
+#ns2_resolve_to_texture=true
+# Handheld-only value of any setting: handheld.<setting>=<value> (the normal value is used docked).
+# Example: no anisotropic texture filtering in handheld only (cheaper, slightly blurrier ground).
+#handheld.anisotropic_override=0
+# A/B cycler for measurements: switches between phases every ns2_ab_windows x 5 s and labels the
+# statistics lines (needs ns2_debug=true; read with tools/ab_report.py). Phases are separated by
+# commas, settings inside a phase by '+': base, valid, ow, tex, aniso<N> or any name:value.
+# (base = the values set above in this file: to compare against ow, set ow to false above.)
+#ns2_ab_phases=base,eager
+#ns2_ab_windows=4

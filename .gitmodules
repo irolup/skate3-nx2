@@ -1,0 +1,7 @@
+[submodule "third_party/skate3recomp"]
+	path = third_party/skate3recomp
+	url = https://github.com/mchughalex/skate3recomp.git
+[submodule "third_party/rexglue-sdk"]
+	path = third_party/rexglue-sdk
+	url = https://github.com/irolup/rexglue-skate3-nx2.git
+	branch = switch2

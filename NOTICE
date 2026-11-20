@@ -1,0 +1,28 @@
+skate3-nx2 - third-party notices
+
+1. rexglue SDK and Xenia
+
+   Parts of platform/ (threading_switch2.cpp, filesystem_switch2.cpp,
+   input_system_switch2.cpp) are adapted from the rexglue SDK's POSIX platform
+   layer, and the SDK itself (third_party/rexglue-sdk, a git submodule) is used
+   under its license:
+
+     Copyright (c) 2026, Tom Clay <tomc@tctechstuff.com>
+     Portions of this software are derived from the Xenia project:
+     Copyright (c) 2022, Ben Vanik and Xenia project contributors
+     https://xenia.jp
+     All rights reserved.
+     Released under the BSD 3-Clause license; the full text is in
+     third_party/rexglue-sdk/LICENSE.
+
+2. skate3recomp
+
+   third_party/skate3recomp is a git submodule pointing to
+   https://github.com/mchughalex/skate3recomp by mchughalex, used unmodified.
+   It is not part of this repository and remains the property of its author.
+
+3. Skate 3
+
+   Skate 3 is (c) 2010 Electronic Arts Inc. This repository contains no game
+   code, data or recompiled game code. This project is not affiliated with or
+   endorsed by Electronic Arts or Nintendo.

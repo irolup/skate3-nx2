@@ -1,0 +1,28 @@
+# Build output
+/build/
+/build-*/
+*.nro
+*.nacp
+*.elf
+*.o
+*.a
+
+# Game files and anything derived from them: never commit these
+*.iso
+*.xex
+*.xexp
+TU_*
+/game/
+generated/
+
+# Console run output
+/logs/
+trace.txt
+crash_hooks.txt
+sampler.txt
+prof.txt
+shots/
+
+# Local
+__pycache__/
+.vscode/
