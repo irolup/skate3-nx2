@@ -95,7 +95,7 @@ To give the NRO an icon in the homebrew menu, put a 256x256 baseline JPEG named 
 ```
 sdmc:/switch/skate3/
   skate3.nro            build/skate3.nro
-  options.txt           options.txt from this repository (optional, recommended)
+  options.txt           options.txt from this repository (required for full speed)
   game/                 the extracted game (the whole game/ folder from step 2)
     default.xexp        Title Update 3 patch files, from
     data/webkit/EAWebkit.xexp    third_party/skate3recomp/out/build/linux-relwithdebinfo/title_update_codegen/
@@ -104,18 +104,30 @@ sdmc:/switch/skate3/
 The two `.xexp` files are extracted from the title update package by the code generation step;
 copy them next to the `.xex` files they patch. The game applies them when it starts.
 
+`options.txt` is needed: it holds the performance settings (CPU clock, GPU emulation tuning,
+render target optimizations). Without it the game starts with the SDK's defaults and runs much
+slower.
+
 Start `skate3.nro` from the homebrew menu. Saves and settings are kept in
 `sdmc:/switch/skate3/user/`, and `sdmc:/switch/skate3/cache/` holds folders the game needs.
 
 ## options.txt
 
 `sdmc:/switch/skate3/options.txt` is read at startup: one `name=value` per line, `#` for comments.
-The file in this repository has the tuned settings and explains each one. The most useful:
+Always copy the file from this repository to the SD card: it has the tuned settings the port needs
+for its frame rate, and explains each one. Settings you may want to change:
 
 - `handheld_fps_cap=0` (default, uncapped) or `40` for a locked, evenly paced 40 fps in handheld.
 - `ns2_debug=true` writes detailed logs and statistics for bug reports (`logs/`, `trace.txt`,
   `sampler.txt`). Without it the game only keeps a small log of the last two launches.
 - `handheld.<setting>=<value>` gives any setting a value used only in handheld mode.
+
+## Known issues
+
+- Occasional rendering artifacts (brief visual glitches). They don't affect gameplay.
+- Handheld runs at about 50 fps in busy areas (docked holds ~60).
+- No native renderer: the game uses the emulated Xbox 360 GPU path, not the PC version's native
+  renderer.
 
 ## Reporting problems
 
