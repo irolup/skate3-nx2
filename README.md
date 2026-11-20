@@ -4,7 +4,7 @@ An unofficial homebrew port of the Skate 3 static recompilation
 ([skate3recomp](https://github.com/mchughalex/skate3recomp) by mchughalex) to the Nintendo Switch 2,
 running as a `.nro` under kaiHEN.
 
-The recompiled Xbox 360 code runs natively on the console's ARM CPU; the Xbox 360 GPU is emulated
+The recompiled Xbox 360 code runs natively on the console's CPU. The Xbox 360 GPU is emulated
 on Vulkan (OunceVK) by the rexglue SDK, which this project ports to Horizon.
 
 **This repository contains no game files and no recompiled game code.** You need your own legally
@@ -17,18 +17,14 @@ obtained Xbox 360 copy of Skate 3 to build and play it, and the build output mus
 | Menus | 60 fps | 60 fps |
 | Gameplay | ~60 fps | ~50 fps in busy areas (uncapped by default; `handheld_fps_cap=40` for a locked 40) |
 
-The game is playable from boot to gameplay, with audio, video playback, saves, the HOME menu and
-docking/undocking. There is no native renderer (the PC version's native renderer is not ported);
-the game uses the SDK's emulated GPU path.
 
 ## What you need
 
-- A Nintendo Switch 2 able to run homebrew through kaiHEN (application with full memory access).
+- A Switch 2 with kaiHEN.
 - Skate 3 for Xbox 360 (title ID `454108E6`), dumped as an ISO, and its Title Update 3 package
   `TU_12K2276_000000C000000.00000000000O3` (the file skate3recomp's own title update installer
   downloads).
-- A Linux PC (x86-64) with git, Python 3, Docker, CMake 3.25+, Ninja and Clang 18+.
-  About 30 GB of free disk space and 16 GB of RAM or more.
+- Linux with git, Python 3, Docker, CMake 3.25+, Ninja and Clang 18+ (I didn't test on Windows)
 
 ## Building
 
